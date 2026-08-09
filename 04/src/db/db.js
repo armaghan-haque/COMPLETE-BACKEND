@@ -10,6 +10,9 @@ async function connectDB(){
 
     } catch (err) {
         
-        console.error('Database connection')
+        console.error('Database connection error ' , err)
     }
 }
+
+module.exports = connectDB
+
