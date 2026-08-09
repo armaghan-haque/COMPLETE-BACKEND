@@ -120,4 +120,67 @@ const jwt = require('jsonwebtoken')
     "password" : "test"
 }     
 
-np
+npm i cookie-parser
+app.js
+const cookieParser = require('cookie-parser')
+app.use(cookieParser())
+
+auth,controller.js
+remove token from res.status and
+    res.cookie('token' , token)
+
+
+  the problem with this is we can regiter the user with same email address but it doesnt happen in real life therefore we are updating the userschema code to
+
+    email : {
+        type: String,
+        unique: true
+    },
+
+  updatiing auth.controller.js 
+     const isUserAlreadyExists = await userModel.findOne({
+        email
+    })
+
+    if(isUserAlreadyExists){
+        return res.status(409).json({
+            message : "user already exists"
+        })
+    }
+
+    creating a dummy route post.routes.js
+    const express = require('express')
+const jwt = require('jsonwebtoken')
+
+const router = express.Router()
+
+router.post('/create' , (req,res)=>{
+
+    const token = req.cookies.token
+
+    if(!token) {
+        return res.status(401).json({
+            message : "Unauthorized"
+        })
+    }
+
+    try {
+        jwt.verify(token , process.env.JWT_SECRET)
+    } catch (err) {
+        return res.status(401).json({
+             message : "token is invalid"
+        })
+    }
+
+    res.send("post created successfuly")
+})
+
+module.exports = router
+
+in app.js
+add
+const postRoutes = require('./routes/post.routes')
+app.use('/api/post', postRoutes)
+
+
+
